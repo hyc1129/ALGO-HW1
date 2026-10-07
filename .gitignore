@@ -1,0 +1,10 @@
+/build/
+/bin/
+sortbench
+sortbench.exe
+*.csv
+__pycache__/
+*.pdf
+*.png
+.vscode/
+.idea/
