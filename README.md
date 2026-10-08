@@ -1,47 +1,40 @@
 # Sort Benchmark Project
 
-This project implements and benchmarks 6 sorting algorithms as required by the assignment.
+This project implements and benchmarks 6 sorting algorithms. It uses a **Python Orchestrator + C++ Worker** architecture to guarantee that if an algorithm crashes (e.g., Out of Memory or Stack Overflow), it gracefully skips and continues without stopping the entire experiment.
 
 ## Directory Structure
 - `src/`: C++ source code.
-- `scripts/`: Python scripts for plotting.
-- `Makefile`: For Linux/Mac/MinGW (TA grading).
-- `CMakeLists.txt`: For modern IDE integration (Windows/Cross-platform).
+- `scripts/`: Python scripts for orchestration and plotting.
+- `Makefile` & `CMakeLists.txt`: Build configurations.
 
 ## Compilation
-You can compile using `make` (preferred for grading):
+You can compile using `make` (preferred for Linux/MinGW grading):
 ```bash
 make
 ```
 
-Or using CMake:
+Or using CMake (for IDEs):
 ```bash
 cmake -B build
 cmake --build build --config Release
 ```
 
 ## Running Experiments
-The executable `sortbench` takes three arguments: `--exp`, `--trials`, and `--seed`.
+Use the Python orchestrator script to run the benchmarks safely. 
 
-**Experiment 1: Random array (N=2^10 to 2^30)**
+**Run ALL experiments sequentially:**
 ```bash
-./sortbench --exp 1 --trials 10 --seed 0
+python scripts/run_benchmarks.py
 ```
-This generates `exp1_results.csv`.
 
-**Experiment 2: Nearly sorted array (N=2^20, K random swaps)**
+**Run independently (e.g., only Experiment 1):**
 ```bash
-./sortbench --exp 2 --trials 10 --seed 0
+python scripts/run_benchmarks.py 1
+python scripts/run_benchmarks.py 2
+python scripts/run_benchmarks.py 3
 ```
-This generates `exp2_results.csv`.
 
-**Experiment 3: Array with many duplicates (N=2^20, K distinct values)**
-```bash
-./sortbench --exp 3 --trials 10 --seed 0
-```
-This generates `exp3_results.csv`.
-
-*Note: In Exp 3, Lomuto partition will stack overflow for small K. To prevent the entire script from crashing and losing data, the code intentionally skips Lomuto for K <= 1024.*
+*(Note: The orchestrator handles the 5-minute timeout and any unexpected crashes (like OOM). It also skips Lomuto for Exp 3 when K <= 1024 to prevent Stack Overflows as instructed.)*
 
 ## Plotting
 Requires Python 3, `pandas`, and `matplotlib`.

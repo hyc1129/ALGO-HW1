@@ -15,3 +15,4 @@ if(MSVC)
 else()
     target_compile_options(sortbench PRIVATE -O2 -Wall -Wextra)
 endif()
+

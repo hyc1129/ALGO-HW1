@@ -29,3 +29,4 @@ inline void verify_sorted(const std::vector<int>& arr) {
 }
 
 #endif // UTILS_HPP
+
