@@ -6,8 +6,10 @@
 #include <string>
 #include <functional>
 #include <cstdlib>
+#include <cstdio>
+#include <cstdint>
 
-int g_count_k = 0;
+int64_t g_count_k = 0;
 void counting_sort_wrapper(std::vector<int>& arr) {
     counting_sort(arr, g_count_k);
 }
@@ -15,18 +17,18 @@ void counting_sort_wrapper(std::vector<int>& arr) {
 int main(int argc, char* argv[]) {
     int exp = 1;
     int trials = 10;
-    int seed = 0;
-    size_t n = 1024;
-    int k = 1024;
+    uint32_t seed = 0;
+    int64_t n = 1024;
+    int64_t k = 1024;
     std::string algo_name = "Merge";
 
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
         if (arg == "--exp" && i + 1 < argc) exp = std::stoi(argv[++i]);
         else if (arg == "--trials" && i + 1 < argc) trials = std::stoi(argv[++i]);
-        else if (arg == "--seed" && i + 1 < argc) seed = std::stoi(argv[++i]);
-        else if (arg == "--n" && i + 1 < argc) n = std::stoull(argv[++i]);
-        else if (arg == "--k" && i + 1 < argc) k = std::stoi(argv[++i]);
+        else if (arg == "--seed" && i + 1 < argc) seed = static_cast<uint32_t>(std::stoul(argv[++i]));
+        else if (arg == "--n" && i + 1 < argc) n = std::stoll(argv[++i]);
+        else if (arg == "--k" && i + 1 < argc) k = std::stoll(argv[++i]);
         else if (arg == "--algo" && i + 1 < argc) algo_name = argv[++i];
     }
 
@@ -34,6 +36,7 @@ int main(int argc, char* argv[]) {
     if (algo_name == "Insertion") algo_func = insertion_sort;
     else if (algo_name == "Merge") algo_func = merge_sort;
     else if (algo_name == "Lomuto") algo_func = quicksort_lomuto;
+    else if (algo_name == "Lomuto-Fixed") algo_func = quicksort_lomuto_fixed;
     else if (algo_name == "Hoare") algo_func = quicksort_hoare;
     else if (algo_name == "3-Way") algo_func = quicksort_3way;
     else if (algo_name == "Counting") algo_func = counting_sort_wrapper;
@@ -53,18 +56,18 @@ int main(int argc, char* argv[]) {
             if (exp == 1) data = generate_exp1_data(n, seed + t);
             else if (exp == 2) data = generate_exp2_data(n, k, seed + t);
             else if (exp == 3) data = generate_exp3_data(n, k, seed + t);
-        } catch (const std::bad_alloc& e) {
+        } catch (const std::bad_alloc&) {
             std::cerr << "OOM during generation\n";
             return 2;
         }
 
-        std::srand(seed + t);
+        set_sort_seed(seed + t);
         
         Timer timer;
         timer.start();
         try {
             algo_func(data);
-        } catch (const std::bad_alloc& e) {
+        } catch (const std::bad_alloc&) {
             std::cerr << "OOM during sorting\n";
             return 2;
         }
@@ -74,7 +77,15 @@ int main(int argc, char* argv[]) {
         verify_sorted(data);
     }
     
-    // 輸出 10 次的平均時間到標準輸出
-    std::cout << (total_time / trials) << "\n";
+    double avg_time = total_time / trials;
+    
+    // Write result to file to bypass any stdout pipe issues in Anaconda
+    if (FILE* f = fopen(".result.txt", "w")) {
+        fprintf(f, "%.8f\n", avg_time);
+        fclose(f);
+    }
+
+    printf("%.8f\n", avg_time);
+    fflush(stdout);
     return 0;
 }
