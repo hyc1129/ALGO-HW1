@@ -101,11 +101,11 @@ def exp2():
         headers = ["Experiment", "N", "K", "Algorithm", "AverageTime(s)", "Status"] + [f"Trial{i+1}(s)" for i in range(10)]
         writer.writerow(headers)
         timeout_algos = set()
-        n = 1 << 20
+        n = 1 << 18
         
         for p in range(0, 21):
             k = 1 << p
-            print(f"Exp 2: N = 2^{20}, K = 2^{p}")
+            print(f"Exp 2: N = 2^{18}, K = 2^{p}")
             
             if len(timeout_algos) == len(ALGOS):
                 print("All algorithms reached limits. Stopping Exp 2.")
@@ -136,11 +136,11 @@ def exp3():
         headers = ["Experiment", "N", "K", "Algorithm", "AverageTime(s)", "Status"] + [f"Trial{i+1}(s)" for i in range(10)]
         writer.writerow(headers)
         timeout_algos = set()
-        n = 1 << 20
+        n = 1 << 18
         
         for p in range(0, 21):
             k = 1 << p
-            print(f"Exp 3: N = 2^{20}, K = 2^{p}")
+            print(f"Exp 3: N = 2^{18}, K = 2^{p}")
             
             if len(timeout_algos) == len(ALGOS):
                 print("All algorithms reached limits. Stopping Exp 3.")
