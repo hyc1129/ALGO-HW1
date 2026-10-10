@@ -180,7 +180,7 @@ def plot_exp3b():
     print("Saved exp3b_plot.png")
 
 if __name__ == '__main__':
-    os.makedirs('scripts', exist_ok=True)
+    
     plot_exp1()
     plot_exp2()
     plot_exp3()
